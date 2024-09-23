@@ -8,7 +8,7 @@ public class AccountService {
     private AccountDAO accountDAO;
 
     public AccountService(){
-        accountDAO = new AccountDAO();
+        this.accountDAO = new AccountDAO();
     }
 
     public Account registerAccount(Account account) {
@@ -16,6 +16,14 @@ public class AccountService {
             return null;
         }
         return this.accountDAO.registerAccount(account);
+    }
+
+    public Account loginAccount(Account account){
+        return this.accountDAO.loginAccount(account);
+    }
+
+    public Account getAccountById(int id){
+        return this.accountDAO.getAccountById(id);
     }
     
 }

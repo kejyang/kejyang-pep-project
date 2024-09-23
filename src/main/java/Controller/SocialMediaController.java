@@ -6,7 +6,9 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import Model.Account;
+import Model.Message;
 import Service.AccountService;
+import Service.MessageService;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -16,9 +18,11 @@ import Service.AccountService;
 public class SocialMediaController {
 
     AccountService accountService;
+    MessageService messageService;
 
     public SocialMediaController(){
         this.accountService = new AccountService();
+        this.messageService = new MessageService();
     }
 
     /**
@@ -30,6 +34,11 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
         app.post("/register", this::registerAccountHandler);
+        app.post("/login", this::loginAccountHandler);
+        app.post("/messages", this::createMessageHandler);
+        app.get("/messages", this::getAllMessagesHandler);
+        app.get("/messages/{message_id}", this::getMessageById);
+        app.delete("/messages/{message_id}", this::deleteMessageById);
 
         return app;
     }
@@ -53,5 +62,67 @@ public class SocialMediaController {
         }
 
     }
+
+    private void loginAccountHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(ctx.body(), Account.class);
+        Account received = accountService.loginAccount(account);
+        if(received!=null){
+            ctx.json(mapper.writeValueAsString(received));
+        }
+        else{
+            ctx.status(401);
+        }
+    }
+    
+    private void createMessageHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message received = messageService.createMessage(message);
+        if(received!=null){
+            ctx.json(mapper.writeValueAsString(received));
+        }
+        else{
+            ctx.status(400);
+        }
+    }
+
+    private void getAllMessagesHandler(Context ctx){
+        ctx.json(messageService.getAllMessages());
+    }
+    
+    private void getMessageById(Context ctx) throws JsonProcessingException{
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.getMessageById(id);
+        if(message!=null){
+            ctx.json(message);
+        }
+        else{
+            ctx.status(200);
+        }
+    }
+
+    private void deleteMessageById(Context ctx) throws JsonProcessingException{
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.deleteMessageById(id);
+        if(message!=null){
+            ctx.json(message);
+        }
+        else{
+            ctx.status(200);
+        }
+    }
+
+    // private void deleteMessageById(Context ctx) throws JsonProcessingException{
+    //     ObjectMapper mapper = new ObjectMapper();
+    //     Integer id = mapper.readValue(ctx.body(), Integer.class);
+    //     Message received = messageService.deleteMessageById(id.intValue());
+    //     if(received!=null){
+    //         ctx.json(mapper.writeValueAsString(received));
+    //     }
+    //     else{
+    //         ctx.status(200);
+    //     }
+    // }
 
 }
