@@ -36,7 +36,23 @@ public class MessageService {
     }
     
     public Message deleteMessageById(int id){
-        return this.messageDAO.deleteMessageById(id);
+        Message message = messageDAO.getMessageById(id);
+        if(message == null){
+            return null;
+        }
+        this.messageDAO.deleteMessageById(id);
+        return message;
+    }
+
+    public Message updateMessageById(int id, Message message){
+        if(message.getMessage_text().length() == 0 || message.getMessage_text().length() > 255){
+            return null;
+        }
+        return this.messageDAO.updateMessageById(id, message);
+    }
+
+    public List<Message> getMessagesFromAccount(int id){
+        return this.messageDAO.getMessagesFromAccount(id);
     }
     
 }

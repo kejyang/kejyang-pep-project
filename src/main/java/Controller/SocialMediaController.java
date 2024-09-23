@@ -1,5 +1,7 @@
 package Controller;
 
+import java.util.List;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
@@ -39,6 +41,8 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageById);
         app.delete("/messages/{message_id}", this::deleteMessageById);
+        app.patch("/messages/{message_id}", this::updateMessageById);
+        app.get("/accounts/{account_id}/messages", this::getMessagesFromAccount);
 
         return app;
     }
@@ -113,16 +117,28 @@ public class SocialMediaController {
         }
     }
 
-    // private void deleteMessageById(Context ctx) throws JsonProcessingException{
-    //     ObjectMapper mapper = new ObjectMapper();
-    //     Integer id = mapper.readValue(ctx.body(), Integer.class);
-    //     Message received = messageService.deleteMessageById(id.intValue());
-    //     if(received!=null){
-    //         ctx.json(mapper.writeValueAsString(received));
-    //     }
-    //     else{
-    //         ctx.status(200);
-    //     }
-    // }
+    private void updateMessageById(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message received = messageService.updateMessageById(id, message);
+        if(received != null){
+            ctx.json(received);
+        }
+        else{
+            ctx.status(400);
+        }
+    }
+    private void getMessagesFromAccount(Context ctx) throws JsonProcessingException{
+        int id = Integer.parseInt(ctx.pathParam("account_id"));
+        List<Message> message = messageService.getMessagesFromAccount(id);
+        if(message!=null){
+            ctx.json(message);
+        }
+        else{
+            ctx.status(200);
+        }
+
+    }
 
 }
