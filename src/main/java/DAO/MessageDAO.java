@@ -15,11 +15,8 @@ public class MessageDAO {
     public Message createMessage(Message message){
         Connection connection = ConnectionUtil.getConnection();
         try {
-//          Write SQL logic here. You should only be inserting with the name column, so that the database may
-//          automatically generate a primary key.
             String sql = "insert into Message(posted_by, message_text, time_posted_epoch) values(?, ?, ?)" ;
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            //write preparedStatement's setString method here.
             preparedStatement.setInt(1, message.getPosted_by());
             preparedStatement.setString(2, message.getMessage_text());
             preparedStatement.setLong(3, message.getTime_posted_epoch());
@@ -40,7 +37,6 @@ public class MessageDAO {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
         try {
-            //Write SQL logic here
             String sql = "SELECT * from Message";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rs = preparedStatement.executeQuery();
@@ -57,7 +53,6 @@ public class MessageDAO {
     public Message getMessageById(int id){
         Connection connection = ConnectionUtil.getConnection();
         try {
-            //Write SQL logic here
             String sql = "SELECT * from Message where Message.message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
@@ -91,7 +86,6 @@ public class MessageDAO {
     public Message updateMessageById(int id, Message updatedFields){
         Connection connection = ConnectionUtil.getConnection();
         try {
-            //Write SQL logic here
             String getSql = "select * from Message where Message.message_id = ?";
             PreparedStatement getStatement = connection.prepareStatement(getSql);
             getStatement.setInt(1, id);
@@ -125,7 +119,6 @@ public class MessageDAO {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
         try {
-            //Write SQL logic here
             String sql = "SELECT * from Message where Message.posted_by = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);

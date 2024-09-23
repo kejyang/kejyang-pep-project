@@ -45,7 +45,7 @@ public class MessageService {
     }
 
     public Message updateMessageById(int id, Message message){
-        if(message.getMessage_text().length() == 0 || message.getMessage_text().length() > 255){
+        if(message.getMessage_text().length() == 0 || message.getMessage_text().length() > 255 || messageDAO.getMessageById(id) == null){
             return null;
         }
         return this.messageDAO.updateMessageById(id, message);
